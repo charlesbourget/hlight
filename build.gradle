@@ -1,0 +1,30 @@
+plugins {
+    id 'org.jetbrains.kotlin.multiplatform' version '1.7.20'
+}
+
+group = 'com.stingray.business'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+    def nativeTarget = linuxArm32Hfp("native")
+
+    nativeTarget.with {
+        binaries {
+            executable {
+                entryPoint = 'main'
+            }
+        }
+    }
+    sourceSets {
+        nativeMain {
+
+        }
+        nativeTest {
+
+        }
+    }
+}
