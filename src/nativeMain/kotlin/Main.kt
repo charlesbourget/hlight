@@ -34,7 +34,5 @@ fun main(args: Array<String>) {
 }
 
 fun usage() {
-    println("colorer")
-    println("Usage:")
-    println("colorer regex_pattern")
+    println("Usage: colorer PATTERN")
 }
