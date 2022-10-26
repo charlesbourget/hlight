@@ -45,7 +45,7 @@ fun main(args: Array<String>) {
 }
 
 fun usage() {
-    println("Usage: colorer PATTERN")
+    println("Usage: hlight PATTERN")
 }
 
 fun validateArgs(args: Array<String>, colors: List<String>) {
