@@ -10,21 +10,50 @@ repositories {
 }
 
 kotlin {
-    def nativeTarget = linuxArm32Hfp("native")
+    targets {
+        linuxArm32Hfp("linuxArm32") {
+            binaries {
+                executable([RELEASE]) {
+                    baseName = project.name + "-linuxArm32"
+                    entryPoint = 'main'
+                }
+            }
+        }
 
-    nativeTarget.with {
-        binaries {
-            executable {
-                entryPoint = 'main'
+        linuxX64("linuxX64") {
+            binaries {
+                executable([RELEASE]) {
+                    baseName = project.name + "-linuxX64"
+                    entryPoint = 'main'
+                }
+            }
+        }
+
+        linuxArm64("linuxArm64") {
+            binaries {
+                executable([RELEASE]) {
+                    baseName = project.name + "-linuxArm64"
+                    entryPoint = 'main'
+                }
             }
         }
     }
+
     sourceSets {
         nativeMain {
 
         }
-        nativeTest {
 
+        linuxX64Main {
+            dependsOn nativeMain
+        }
+
+        linuxArm32Main {
+            dependsOn nativeMain
+        }
+
+        linuxArm64Main {
+            dependsOn nativeMain
         }
     }
 }
