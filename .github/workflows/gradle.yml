@@ -6,7 +6,7 @@ on:
       - 'v*.*.*'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -27,4 +27,4 @@ jobs:
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
-        files: build/bin/linux*/*.kexe
+        files: build/bin/linux*/releaseExecutable/*.kexe
