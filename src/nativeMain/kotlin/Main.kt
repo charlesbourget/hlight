@@ -1,30 +1,16 @@
 import platform.posix.exit
 
-const val ANSI_RED_BACKGROUND = "\u001B[41m"
-const val ANSI_GREEN_BACKGROUND = "\u001B[42m"
-const val ANSI_YELLOW_BACKGROUND = "\u001B[43m"
-const val ANSI_BLUE_BACKGROUND = "\u001B[44m"
-const val ANSI_PURPLE_BACKGROUND = "\u001B[45m"
-const val ANSI_CYAN_BACKGROUND = "\u001B[46m"
-const val ANSI_WHITE_BACKGROUND = "\u001B[47m"
-const val ANSI_RESET = "\u001B[0m"
-
-data class Pattern(val regex: Regex, val color: String)
+var useConfiguration = false
 
 fun main(args: Array<String>) {
-    val colors = listOf(
-        ANSI_RED_BACKGROUND,
-        ANSI_GREEN_BACKGROUND,
-        ANSI_YELLOW_BACKGROUND,
-        ANSI_BLUE_BACKGROUND,
-        ANSI_PURPLE_BACKGROUND,
-        ANSI_CYAN_BACKGROUND,
-        ANSI_WHITE_BACKGROUND
-    )
+    validateArgs(args, getNumColors())
 
-    validateArgs(args, colors)
+    val inputPatterns: List<String> = when(useConfiguration) {
+        true -> Configuration().getPatterns()
+        false -> args.asList()
+    }
 
-    val patterns = List(args.size) { i -> Pattern(Regex(args[i]), colors[i]) }
+    val patterns = List(inputPatterns.size) { i -> Pattern(Regex(inputPatterns[i]), colors[i]) }
 
     while (true) {
         try {
@@ -45,10 +31,15 @@ fun main(args: Array<String>) {
 }
 
 fun usage() {
-    println("Usage: hlight PATTERN")
+    println("""Usage:
+        Using command line arguments: 
+            hlight PATTERNS
+        or using config file in ~/.config/hlight/hlight.json
+            hlight -c
+        """)
 }
 
-fun validateArgs(args: Array<String>, colors: List<String>) {
+fun validateArgs(args: Array<String>, numColors: Int) {
     if (args.isEmpty()) {
         println("ERROR: Program needs at least 1 positional argument")
         usage()
@@ -60,8 +51,12 @@ fun validateArgs(args: Array<String>, colors: List<String>) {
         exit(0)
     }
 
-    if (args.size > colors.size) {
-        println("ERROR: Too much patterns. The limit is ${colors.size}")
+    if (args.contains("-c") || args.contains("--config")) {
+        useConfiguration = true
+    }
+
+    if (args.size > numColors) {
+        println("ERROR: Too much patterns. The limit is $numColors")
         usage()
         exit(1)
     }

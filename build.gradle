@@ -1,5 +1,6 @@
 plugins {
     id 'org.jetbrains.kotlin.multiplatform' version '1.7.20'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.7.20'
 }
 
 group = 'com.cbourget'
@@ -37,11 +38,30 @@ kotlin {
                 }
             }
         }
+
+        def hostOs = System.getProperty("os.name")
+        if (hostOs == "Mac OS X") {
+            macosArm64('macOsArm64').with {
+                binaries {
+                    executable([RELEASE]) {
+                        entryPoint = 'main'
+                    }
+                }
+            }
+
+            task macOs {
+                dependsOn compileKotlinMacOsArm64
+                dependsOn linkReleaseExecutableMacOsArm64
+                dependsOn macOsArm64MainKlibrary
+            }
+        }
     }
 
     sourceSets {
         nativeMain {
-
+            dependencies {
+                implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
+            }
         }
 
         linuxX64Main {
@@ -53,6 +73,9 @@ kotlin {
         }
 
         linuxArm64Main {
+            dependsOn nativeMain
+        }
+        macOsArm64Main {
             dependsOn nativeMain
         }
     }
